@@ -1,10 +1,10 @@
 # Lab 3 assignment
 
-**Points**: 1
+**Points**: 2
 
 **Deadline**: Week 4
 
-**Last chance deadline and penalties**: Week 6, -0.3 points / week delayed
+**Last chance deadline and penalties**: Week 6, -0.5 points / week delayed
 
 ----
 
