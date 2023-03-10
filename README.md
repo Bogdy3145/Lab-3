@@ -16,4 +16,4 @@ You will need to:
 - Add CRUD for all entities.
 - Add a statistical report involving two entities. For example: show all movies ordered by the average age of their actors. Such reports **need** to show the computed field: the average age of the actors in this case. You probably want to use a `DTO` class for this.
 
-You are not allowed to write any raw SQL queries: it must all be done through an ORM.
+For this and all future assignments, unless otherwise specified, you are not allowed to write any raw SQL queries: it must all be done through an ORM.
