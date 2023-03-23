@@ -14,6 +14,7 @@ class CarsSerializer(serializers.ModelSerializer):
     engine = serializers.CharField(read_only=True)
     type = serializers.CharField(read_only=True)
     year = serializers.IntegerField(read_only=True)
+    hp = serializers.IntegerField(read_only=True)
 
 
     def validate_brand_id(self, value):
@@ -24,13 +25,13 @@ class CarsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cars
-        fields = ['id', 'name', 'description', 'engine', 'type', 'year']
+        fields = ['id', 'name', 'description', 'engine', 'type', 'year', 'hp']
 
 
 class CarDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cars
-        fields = ['id', 'name', 'description', 'engine', 'type', 'year']
+        fields = ['id', 'name', 'description', 'engine', 'type', 'year', 'hp']
         depth=1
 
 
@@ -47,6 +48,30 @@ class BrandDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ['id', 'name', 'founding_year', 'owner_name', 'rarity', 'hq_address', 'cars']
+
+
+class BrandWithCarSerializer(serializers.ModelSerializer):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.car = serializers.IntegerField(required=False)
+
+    name = serializers.CharField(max_length=255)
+    founding_year = serializers.IntegerField()
+    owner_name = serializers.CharField(read_only=True)
+    rarity = serializers.CharField(read_only=True)
+    hq_address = serializers.CharField(read_only=True)
+
+    # car = serializers.SlugRelatedField(queryset=Cars.objects.all(), slug_field='id', required=False)
+    #car = serializers.IntegerField(required=False)
+
+    def update_car(self):
+        Cars.objects.filter(id=int(str(self.car))).update(name=self.name)
+
+    class Meta:
+        model = Brand
+        fields = ['id', 'name', 'founding_year', 'owner_name', 'rarity', 'hq_address', 'car']
+
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -74,16 +99,17 @@ class CarOwnershipSerializer(serializers.ModelSerializer):
     customer_id = serializers.SlugRelatedField(queryset=Customers.objects.all(), slug_field='name')
     date = serializers.DateField()
     name_of_dealer = serializers.CharField(max_length=200, default="0")
+    price = serializers.IntegerField(default="0")
 
     class Meta:
         model = CarOwnership
-        fields = ['id', 'car_id', 'customer_id', 'date', 'name_of_dealer']
+        fields = ['id', 'car_id', 'customer_id', 'date', 'name_of_dealer', 'price']
 
 
 class CarOwnershipDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarOwnership
-        fields = ['id', 'car_id', 'customer_id', 'date', 'name_of_dealer']
+        fields = ['id', 'car_id', 'customer_id', 'date', 'name_of_dealer', 'price']
         depth=1
 
 
@@ -94,3 +120,12 @@ class StatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ['id', 'name', 'avg_production_year', 'car_count']
+
+
+class StatisticFoundingSerializer(serializers.ModelSerializer):
+    avg_hp = serializers.IntegerField(read_only=True)
+    car_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Brand
+        fields = ['id', 'name', 'avg_hp', 'car_count']

@@ -4,7 +4,7 @@ from .models import Cars
 from .models import Brand
 from .models import Customers
 from .models import CarOwnership
-from .serializers import CarsSerializer, CustomerDetailSerializer
+from .serializers import CarsSerializer, CustomerDetailSerializer, BrandWithCarSerializer, StatisticFoundingSerializer
 from .serializers import BrandSerializer
 from .serializers import CustomerSerializer
 from .serializers import CarDetailSerializer
@@ -65,13 +65,18 @@ def brand_list(request, format=None):
         return Response(serializer.data)
 
     if request.method == 'POST':
-        serializer = BrandSerializer(data=request.data)
+        #serializer = BrandSerializer(data=request.data)
+        serializer = BrandWithCarSerializer(data=request.data)
+
 
         if serializer.is_valid():
             serializer.save()
+            serializer.update_car()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 @api_view(['GET','PUT', 'DELETE'])
@@ -231,3 +236,15 @@ def statistic(request):
 
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def statisticHp(request):
+    statistic = Brand.objects.annotate(
+        avg_hp = Avg('cars__horsepower'),
+        car_count=Count('cars')
+
+    ).order_by('-avg_hp')
+
+    serializer = StatisticFoundingSerializer(statistic, many=True)
+
+    return Response(serializer.data)
