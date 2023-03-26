@@ -12,6 +12,7 @@ from .serializers import BrandDetailSerializer
 from .serializers import CarOwnershipSerializer
 from .serializers import CarOwnershipDetailSerializer
 from .serializers import StatisticSerializer
+from .serializers import BrandCarSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -65,13 +66,32 @@ def brand_list(request, format=None):
         return Response(serializer.data)
 
     if request.method == 'POST':
-        #serializer = BrandSerializer(data=request.data)
-        serializer = BrandWithCarSerializer(data=request.data)
 
+#         brand_data = request.data
+#         print(brand_data['car'])
+#         print(brand_data['car'])
+#         print(brand_data['car'])
+#         print(brand_data['car'])
+#         aux = int(brand_data['car'])
+#         print(aux)
+#         print(brand_data['name'])
+# #        print(Brand.objects.get(name=brand_data['name']))
+
+        #car_modified = Cars.objects.get(id=aux)
+        #car_modified.name = Brand.objects.get(name=brand_data['name'])
+        #car_modified.save()
+
+        #Cars.objects.filter(pk=aux).update(name=brand_data['name'])
+
+        serializer = BrandSerializer(data=request.data)
+        #serializer = BrandWithCarSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            serializer.update_car()
+            #car_modified = Cars.objects.get(id=aux)
+            #car_modified.name = Brand.objects.get(name=brand_data['name'])
+            #car_modified.save()
+            # serializer.update_car()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -248,3 +268,24 @@ def statisticHp(request):
     serializer = StatisticFoundingSerializer(statistic, many=True)
 
     return Response(serializer.data)
+
+@api_view(['POST'])
+def assigning_brands_to_cars(request):
+    if request.method == 'POST':
+
+        brand_data = request.data
+        print(brand_data['car_id'])
+        print(brand_data['name'])
+
+        ids = str(brand_data['car_id']).split(', ')
+
+        for x in ids:
+            try:
+                car_modified = Cars.objects.get(id=x)
+                car_modified.name = Brand.objects.get(name=brand_data['name'])
+                car_modified.save()
+            except Cars.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(None)
+

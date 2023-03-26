@@ -9,7 +9,7 @@ class Brand(models.Model):
     hq_address = models.CharField(max_length=200, default="0", null=True)
     # no_of_employees = models.IntegerField(default="0", null=True)
 
-    car = models.CharField(max_length=200, default="-1", null=True)
+    # car = models.CharField(max_length=200, default="-1", null=True)
 
     def __str__(self):
         #return self.name + ' ' + str(self.founding_year) + ' ' + self.owner_name + ' ' + self.rarity + ' ' + self.hq_address

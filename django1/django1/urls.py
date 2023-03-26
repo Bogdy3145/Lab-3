@@ -31,6 +31,7 @@ urlpatterns = [
     path('sales/<int:id>', controller.sales_detail),
     path("statistic/", controller.statistic),
     path("statistic/hp/", controller.statisticHp),
+    path("brand/assign", controller.assigning_brands_to_cars)
 
 ]
 

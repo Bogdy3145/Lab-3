@@ -72,6 +72,13 @@ class BrandWithCarSerializer(serializers.ModelSerializer):
         model = Brand
         fields = ['id', 'name', 'founding_year', 'owner_name', 'rarity', 'hq_address', 'car']
 
+class BrandCarSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(max_length=255)
+    car_id = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = Brand
+        fields = ['id', 'name', 'car_id']
 
 
 class CustomerSerializer(serializers.ModelSerializer):
